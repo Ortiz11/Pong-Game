@@ -1,0 +1,259 @@
+@disp MACRO msg          ;displays string
+MOV DX, OFFSET msg
+MOV AH, 09H
+INT 21H
+endm
+
+@read_Char MACRO char		;reads character
+MOV AH, 01H
+INT 21H
+endm 
+
+@read_str MACRO string		;reads string
+MOV DX, OFFSET string
+MOV AH, 0Ah
+INT 21h
+endm 
+
+@dispChar1 MACRO
+MOV AH, 02h
+INT 21h
+endm
+
+@Create MACRO FileName, FileHandle
+LEA DX,FileName
+MOV AH,3Ch
+INT 21h
+MOV FileHandle,AX
+endm
+
+@Open MACRO FileName, FileHandle
+MOV AH,3Dh
+MOV AL,02h
+LEA DX,FileName
+INT 21h
+MOV FileHandle,AX
+endm
+
+@Write MACRO FileHandle
+MOV BX,FileHandle
+MOV AH,40h
+INT 21h
+endm
+
+@Read MACRO FileHandle
+MOV BX,FileHandle
+MOV AH,3Fh
+INT 21h
+endm
+
+@Close MACRO FileHandle
+MOV BX,FileHandle
+MOV AH,3Eh
+INT 21h
+endm
+
+@Clear_Screen MACRO 
+	INT 61H
+ENDM
+
+@Video MACRO 
+	MOV AH,00
+	MOV AL,0Eh
+	Int 10h
+ENDM
+
+@Video2 Macro
+	MOV AL, 03H
+	MOV AH,00
+	Int 10H
+ENDM
+
+@Cursor MACRO
+	MOV AH,02
+	MOV BH,0
+	MOV DH,10
+	MOV DL,10
+	INT 10h
+ENDM
+
+@Draw_RecF MACRO X,Y,RecW,RecH,Color
+	MOV AH,01
+	MOV AL,Color
+	MOV CX,X
+	MOV DX,Y
+	MOV DI,RecW
+	MOV SI,RecH
+	INT 62h
+ENDM
+
+@Draw_RecFC MACRO XC,YC,ClrW,ClrH,Color
+	MOV AH,01
+	MOV AL,Color
+	MOV CX,XC
+	MOV DX,YC
+	MOV DI,ClrW
+	MOV SI,ClrH
+	INT 62h
+ENDM
+
+@Draw_RecNF MACRO X,Y,RecW,RecH,Color
+	MOV AH,02
+	MOV CX,X
+	MOV DX,Y
+	MOV DI,RecW
+	MOV SI,RecH
+	MOV AL,Color
+	Int 62h
+ENDM
+
+@Draw_Vline MACRO XB,YB,BallLine,BallColor
+	MOV AH,03
+	MOV CX,XB
+	MOV DX,YB
+	MOV SI,BallLine
+	MOV AL,BallColor
+	INT 62h
+ENDM
+
+@Draw_Hline MACRO XB,YB,BallLine,BallColor
+	MOV AH,04
+	MOV CX,XB
+	MOV DX,YB
+	MOV DI,BallLine
+	MOV AL,BallColor
+	INT 62h
+ENDM
+
+@TimeD2 MACRO
+	Push AX
+	MOV CX,000233H
+WaitF3:
+	IN AL,61h
+	AND AL,10h
+	CMP AL,AH
+	JE WaitF3
+	MOV AH,AL
+	LOOP WaitF3
+	POP AX
+ENDM
+
+@TimeD1 MACRO
+	Push AX
+	MOV BL,04
+WaitF2:
+	MOV CX,00FFFFH
+WaitF1:
+	IN AL,61h
+	AND AL,10h
+	CMP AL,AH
+	JE WaitF1
+	MOV AH,AL
+	LOOP WaitF1
+	DEC BL
+	CMP BL,0
+	JNE WaitF2
+	POP AX
+ENDM
+	
+@Logo MACRO Message
+	MOV AH,02
+	MOV BH,0
+	MOV DH,12
+	MOV DL,35
+	INT 10h
+	
+	MOV AH,09
+	MOV BH,00
+	MOV AL,50h
+	MOV CX,1
+	MOV BL,15
+	INT 10h
+	
+	MOV AH,02
+	MOV BH,0
+	MOV DH,12
+	MOV DL,36
+	INT 10h
+	
+	MOV AH,09
+	MOV BH,00
+	MOV AL,4Fh
+	MOV CX,1
+	MOV BL,15
+	INT 10h
+	
+	MOV AH,02
+	MOV BH,0
+	MOV DH,12
+	MOV DL,37
+	INT 10h
+	
+	MOV AH,09
+	MOV BH,00
+	MOV AL,4Eh
+	MOV CX,1
+	MOV BL,15
+	INT 10h
+	
+	MOV AH,02
+	MOV BH,0
+	MOV DH,12
+	MOV DL,38
+	INT 10h
+	
+	MOV AH,09
+	MOV BH,00
+	MOV AL,47h
+	MOV CX,1
+	MOV BL,15
+	INT 10h
+;;;;;;;;;;;;;;;;;
+	
+ENDM
+
+@CursorC MACRO
+	MOV AX,0
+	INT 33h
+	MOV AX,1
+	INT 33h
+ENDM
+
+@GMenu MACRO Message,Num_char
+
+	PUSH SI
+	PUSH ES
+	MOV AX,1300H
+	MOV BH,00d
+	MOV BL,00000010b
+	MOV CX,Num_char
+	MOV BP, OFFSET Message
+	MOV SI, SEG Message
+	MOV ES,SI
+	INT 10h
+	POP ES
+	POP SI
+	
+	
+
+ENDM
+
+
+	;PUSH SI
+	;PUSH ES
+	;MOV AX,1300H
+	;MOV BH,00
+	;MOV BL,2
+	;MOV CX,20
+	;MOV DL,5
+	;MOV DH,2
+	;MOV BP, OFFSET Message
+	;MOV SI, SEG Message
+	;MOV ES,SI
+	;INT 10h
+	;POP ES
+	;POP SI
+
+
+
+
